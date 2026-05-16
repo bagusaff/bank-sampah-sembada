@@ -124,7 +124,7 @@ export default function App() {
 									<Route path="withdrawals" element={<AdminWithdrawalList />} />
 									<Route path="news" element={<NewsList />} />
 									<Route path="reports" element={<MonthlyReport />} />
-									<Route path="settings" element={<MemberAccountSettings />} />
+									<Route path="settings" element={<AccountSettings />} />
 								</Route>
 							</Route>
 
@@ -137,7 +137,7 @@ export default function App() {
 									<Route path="withdrawal" element={<WithdrawalStepper />} />
 									<Route path="withdrawals" element={<MemberWithdrawalList />} />
 									<Route path="notifications" element={<NotificationCenter />} />
-									<Route path="settings" element={<AccountSettings />} />
+									<Route path="settings" element={<MemberAccountSettings />} />
 								</Route>
 							</Route>
 
