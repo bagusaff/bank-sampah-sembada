@@ -30,6 +30,10 @@ import NotificationCenter from "./components/member/NotificationCenter";
 import WithdrawalStepper from "./components/member/WithdrawalFlow/WithdrawalStepper";
 import WithdrawalList from "./components/member/WithdrawalHistory/WithdrawalList";
 
+import AdminDashboard from "./components/admin/AdminDashboard";
+import DepositForm from "./components/admin/DepositForm";
+import PriceList from "./components/admin/PriceManagement/PriceList";
+
 // ─── Query client ────────────────────────────────────────────────────────────
 
 const queryClient = new QueryClient({
@@ -110,13 +114,13 @@ export default function App() {
               <Route path="/admin" element={<ProtectedRoute role="admin" />}>
                 <Route element={<AdminLayout />}>
                   <Route index element={<Navigate to="dashboard" replace />} />
-                  <Route path="dashboard" element={<Placeholder title="Dashboard Admin" />} />
-                  <Route path="prices"     element={<Placeholder title="Kelola Harga Sampah" />} />
-                  <Route path="members"    element={<Placeholder title="Kelola Member" />} />
-                  <Route path="deposit"    element={<Placeholder title="Input Deposit" />} />
+                  <Route path="dashboard"   element={<AdminDashboard />} />
+                  <Route path="prices"      element={<PriceList />} />
+                  <Route path="members"     element={<Placeholder title="Kelola Member" />} />
+                  <Route path="deposit"     element={<DepositForm />} />
                   <Route path="withdrawals" element={<Placeholder title="Kelola Withdrawal" />} />
-                  <Route path="news"       element={<Placeholder title="Kelola Berita" />} />
-                  <Route path="reports"    element={<Placeholder title="Laporan Bulanan" />} />
+                  <Route path="news"        element={<Placeholder title="Kelola Berita" />} />
+                  <Route path="reports"     element={<Placeholder title="Laporan Bulanan" />} />
                 </Route>
               </Route>
 

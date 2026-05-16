@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabase";
-import type { Deposit, DepositWithRelations } from "../types";
+import type { Deposit, DepositWithRelations, CreateDepositPayload } from "../types";
 
 export async function getDepositsByMember(
   memberId: string
@@ -42,7 +42,7 @@ export async function getDepositStats(
 }
 
 export async function createDeposit(
-  payload: Omit<Deposit, "id" | "created_at" | "trash_type">
+  payload: CreateDepositPayload
 ): Promise<Deposit> {
   const { data, error } = await supabase
     .from("deposits")
@@ -51,4 +51,18 @@ export async function createDeposit(
     .single();
   if (error) throw error;
   return data as Deposit;
+}
+
+/**
+ * Fetch recent deposits across all members (for admin dashboard).
+ * Joined with trash_types and member profile info.
+ */
+export async function getRecentDeposits(limit = 10): Promise<DepositWithRelations[]> {
+  const { data, error } = await supabase
+    .from("deposits")
+    .select("*, trash_type:trash_types(*), member:profiles!deposits_member_id_fkey(id, full_name, phone_number)")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data as DepositWithRelations[];
 }

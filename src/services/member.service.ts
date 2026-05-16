@@ -1,14 +1,37 @@
 import { supabase } from "../lib/supabase";
-import type { Profile, MemberBalance } from "../types";
+import type { Profile, MemberBalance, MemberWithBalance } from "../types";
 
-export async function getAllMembers(): Promise<Profile[]> {
+export async function getAllMembers(): Promise<MemberWithBalance[]> {
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("*, member_balance:member_balances(*)")
     .eq("role", "member")
     .order("full_name");
   if (error) throw error;
-  return data as Profile[];
+  return data as MemberWithBalance[];
+}
+
+export async function searchMembers(query: string): Promise<MemberWithBalance[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*, member_balance:member_balances(*)")
+    .eq("role", "member")
+    .or(`full_name.ilike.%${query}%,phone_number.ilike.%${query}%`)
+    .order("full_name")
+    .limit(20);
+  if (error) throw error;
+  return data as MemberWithBalance[];
+}
+
+export async function getMemberById(id: string): Promise<MemberWithBalance | null> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*, member_balance:member_balances(*)")
+    .eq("id", id)
+    .eq("role", "member")
+    .maybeSingle();
+  if (error) throw error;
+  return data as MemberWithBalance | null;
 }
 
 export async function getMemberByPhone(phone: string): Promise<Profile | null> {

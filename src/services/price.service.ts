@@ -53,7 +53,50 @@ export async function getAcceptedTypes(): Promise<TrashType[]> {
   return data as TrashType[];
 }
 
-export async function updatePrice(
+/**
+ * Fetch all trash types ordered by category, name.
+ */
+export async function getAllTrashTypes(): Promise<TrashType[]> {
+  const { data, error } = await supabase
+    .from("trash_types")
+    .select("*")
+    .order("category", { ascending: true })
+    .order("name", { ascending: true });
+  if (error) throw error;
+  return data as TrashType[];
+}
+
+export async function createTrashType(
+  payload: Omit<TrashType, "id" | "created_at" | "updated_at">
+): Promise<TrashType> {
+  const { data, error } = await supabase
+    .from("trash_types")
+    .insert(payload)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as TrashType;
+}
+
+export async function updateTrashType(
+  id: string,
+  payload: Partial<Omit<TrashType, "id" | "created_at" | "updated_at">>
+): Promise<TrashType> {
+  const { data, error } = await supabase
+    .from("trash_types")
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as TrashType;
+}
+
+/**
+ * Set a new active price for a trash type.
+ * Deactivates all existing prices for the type, then inserts a new active one.
+ */
+export async function setNewPrice(
   trashTypeId: string,
   pricePerKg: number,
   createdBy: string
@@ -77,4 +120,27 @@ export async function updatePrice(
     .single();
   if (error) throw error;
   return data as TrashPrice;
+}
+
+export async function updatePrice(
+  trashTypeId: string,
+  pricePerKg: number,
+  createdBy: string
+): Promise<TrashPrice> {
+  return setNewPrice(trashTypeId, pricePerKg, createdBy);
+}
+
+/**
+ * Fetch all price history for a trash type, ordered by effective_date desc.
+ */
+export async function getPriceHistory(
+  trashTypeId: string
+): Promise<TrashPrice[]> {
+  const { data, error } = await supabase
+    .from("trash_prices")
+    .select("*")
+    .eq("trash_type_id", trashTypeId)
+    .order("effective_date", { ascending: false });
+  if (error) throw error;
+  return data as TrashPrice[];
 }
