@@ -36,7 +36,10 @@ export function useNotifications(userId: string) {
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        () => {
+        (payload) => {
+          const notif = payload.new as { id: string; title: string; message: string };
+          // toast id = notification id → deduplicates across multiple hook instances
+          toast(`🔔 ${notif.title}`, { id: notif.id, duration: 6000 });
           qc.invalidateQueries({ queryKey: ["notifications", userId] });
         }
       )

@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Leaf, LayoutDashboard, DollarSign, Users, PackagePlus, Banknote, Newspaper, FileBarChart, LogOut, Menu, X, UserCircle, Settings } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import { useNotifications } from "../hooks/useNotifications";
 
 // ─── Sidebar nav config ───────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -116,7 +117,8 @@ function Sidebar({ onClose, onSignOut, adminName }: { onClose?: () => void; onSi
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export default function AdminLayout() {
-	const { profile, signOut } = useAuth();
+	const { user, profile, signOut } = useAuth();
+	useNotifications(user?.id ?? "");
 	const isMobile = useMediaQuery("(max-width: 1023px)");
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 

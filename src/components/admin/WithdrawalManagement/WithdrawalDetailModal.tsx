@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   X,
   User,
@@ -7,12 +8,13 @@ import {
   CheckCircle2,
   Ban,
   Loader2,
-  AlertCircle,
+  ShieldAlert,
   Building2,
   CreditCard,
   UserCheck,
   Calendar,
   Package,
+  TriangleAlert,
 } from "lucide-react";
 import { useAuth } from "../../../hooks/useAuth";
 import {
@@ -92,6 +94,7 @@ export default function WithdrawalDetailModal({
 
   const isPending = withdrawal.status === "pending";
   const isProcessing = completeMutation.isPending || cancelMutation.isPending;
+  const [confirmingComplete, setConfirmingComplete] = useState(false);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -206,25 +209,14 @@ export default function WithdrawalDetailModal({
           )}
 
           {/* Actions */}
-          {isPending && (
+          {isPending && !confirmingComplete && (
             <div className="flex gap-2 pt-2">
               <button
-                onClick={() => {
-                  if (window.confirm("Yakin ingin menandai withdrawal ini selesai?")) {
-                    completeMutation.mutate(
-                      { id: withdrawal.id, completedBy: adminId },
-                      { onSuccess: onClose }
-                    );
-                  }
-                }}
+                onClick={() => setConfirmingComplete(true)}
                 disabled={isProcessing}
                 className="flex-1 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 disabled:opacity-60 transition-all shadow-lg shadow-emerald-200 flex items-center justify-center gap-1.5"
               >
-                {completeMutation.isPending ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <CheckCircle2 size={14} />
-                )}
+                <CheckCircle2 size={14} />
                 Tandai Selesai
               </button>
               <button
@@ -243,6 +235,84 @@ export default function WithdrawalDetailModal({
                 )}
                 Batalkan
               </button>
+            </div>
+          )}
+
+          {/* Completion confirmation panel */}
+          {isPending && confirmingComplete && (
+            <div className="space-y-4 pt-2">
+              {/* Warning banner */}
+              <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <TriangleAlert size={18} className="text-amber-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-xs font-black text-amber-800 uppercase tracking-wide">
+                    Perhatian Sebelum Konfirmasi
+                  </p>
+                  <p className="text-xs text-amber-700 font-medium leading-relaxed">
+                    Tombol ini hanya boleh ditekan setelah uang benar-benar sudah diserahkan kepada member. Tindakan ini tidak dapat dibatalkan.
+                  </p>
+                </div>
+              </div>
+
+              {/* Verification summary */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert size={14} className="text-slate-500" />
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                    Verifikasi Penyerahan
+                  </p>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500 font-medium">Penerima</span>
+                    <span className="text-xs font-black text-slate-900">
+                      {withdrawal.member?.full_name ?? "-"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500 font-medium">Nomor HP</span>
+                    <span className="text-xs font-black text-slate-900">
+                      {withdrawal.member?.phone_number ?? "-"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500 font-medium">Jumlah</span>
+                    <span className="text-sm font-black text-emerald-700">
+                      {formatRupiah(withdrawal.total_amount)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Confirm / cancel */}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmingComplete(false)}
+                  disabled={isProcessing}
+                  className="flex-1 py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 disabled:opacity-60 transition-all"
+                >
+                  Kembali
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    completeMutation.mutate(
+                      { id: withdrawal.id, completedBy: adminId },
+                      { onSuccess: onClose }
+                    )
+                  }
+                  disabled={isProcessing}
+                  className="flex-1 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 disabled:opacity-60 transition-all shadow-lg shadow-emerald-200 flex items-center justify-center gap-1.5"
+                >
+                  {completeMutation.isPending ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <CheckCircle2 size={14} />
+                  )}
+                  Ya, Uang Sudah Diserahkan
+                </button>
+              </div>
             </div>
           )}
         </div>

@@ -6,8 +6,7 @@ import {
   ChevronRight,
   Send,
   Loader2,
-  AlertTriangle,
-  CheckCircle2,
+  Info,
   Landmark,
   Banknote,
   Package,
@@ -15,9 +14,9 @@ import {
 import { useAuth } from "../../../hooks/useAuth";
 import { useDeposits } from "../../../hooks/useDeposits";
 import { useBankAccounts } from "../../../hooks/useBankAccounts";
-import { useLastWithdrawalDate, useCreateWithdrawal } from "../../../hooks/useWithdrawal";
+import { useCreateWithdrawal } from "../../../hooks/useWithdrawal";
 import { formatRupiah } from "../../../utils/formatters";
-import { format, differenceInDays, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 interface Step3Props {
@@ -53,7 +52,6 @@ export default function Step3_Review({ onBack }: Step3Props) {
 
   const { data: deposits, isLoading: depositsLoading } = useDeposits(memberId);
   const { data: accounts } = useBankAccounts(memberId);
-  const { data: lastWithdrawalDate, isLoading: lastLoading } = useLastWithdrawalDate(memberId);
   const createWithdrawal = useCreateWithdrawal();
 
   const selectedDeposits = useMemo(() => {
@@ -74,17 +72,6 @@ export default function Step3_Review({ onBack }: Step3Props) {
     [accounts, bankAccountId]
   );
 
-  // Cooldown warning
-  const cooldownWarning = useMemo(() => {
-    if (!lastWithdrawalDate) return null;
-    const daysSince = differenceInDays(new Date(), parseISO(lastWithdrawalDate));
-    if (daysSince >= 2) return null;
-    return {
-      daysSince,
-      message: `Anda baru melakukan penarikan ${daysSince === 0 ? "hari ini" : `${daysSince} hari yang lalu`}. Disarankan menunggu 2 hari antar penarikan.`,
-    };
-  }, [lastWithdrawalDate]);
-
   async function handleConfirm() {
     await createWithdrawal.mutateAsync({
       member_id: memberId,
@@ -97,7 +84,7 @@ export default function Step3_Review({ onBack }: Step3Props) {
     navigate("/member/withdrawals", { replace: true });
   }
 
-  if (depositsLoading || lastLoading) return <Skeleton />;
+  if (depositsLoading) return <Skeleton />;
 
   return (
     <div className="space-y-6">
@@ -180,16 +167,16 @@ export default function Step3_Review({ onBack }: Step3Props) {
         </div>
       </div>
 
-      {/* Cooldown warning */}
-      {cooldownWarning && (
-        <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-100 rounded-2xl">
-          <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
+      {/* Manual withdrawal info */}
+      {withdrawalType === "manual" && (
+        <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+          <Info size={18} className="text-blue-500 shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-bold text-amber-700">
-              Penarikan Terlalu Sering
+            <p className="text-xs font-bold text-blue-700">
+              Info Penarikan Tunai
             </p>
-            <p className="text-xs text-amber-600 font-medium mt-0.5">
-              {cooldownWarning.message}
+            <p className="text-xs text-blue-600 font-medium mt-0.5">
+              Disarankan mengajukan penarikan tunai minimal 2 hari sebelumnya agar admin dapat mempersiapkan uang.
             </p>
           </div>
         </div>

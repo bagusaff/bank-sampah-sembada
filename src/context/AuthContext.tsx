@@ -59,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
 
     let cancelled = false;
-    setLoading(true);
 
     supabase
       .from("profiles")

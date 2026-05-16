@@ -89,7 +89,6 @@ export default function WithdrawalList() {
 	const debouncedSearch = useDebounce(search, 300);
 
 	// Realtime subscription for withdrawal updates
-	const qc = useAllWithdrawalRequests().refetch;
 	useEffect(() => {
 		const channel = supabase
 			.channel(`withdrawals-admin-${instanceId.current}`)
