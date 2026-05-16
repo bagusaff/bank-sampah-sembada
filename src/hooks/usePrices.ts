@@ -7,6 +7,7 @@ import {
   getPriceHistory,
   createTrashType,
   updateTrashType,
+  deleteTrashType,
   setNewPrice,
 } from "../services/price.service";
 import toast from "react-hot-toast";
@@ -84,6 +85,21 @@ export function useCreateTrashType() {
       toast.success("Jenis sampah berhasil ditambahkan");
     },
     onError: () => toast.error("Gagal menambahkan jenis sampah"),
+  });
+}
+
+export function useDeleteTrashType() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteTrashType(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trash-types"] });
+      qc.invalidateQueries({ queryKey: ["prices"] });
+      qc.invalidateQueries({ queryKey: ["active-prices"] });
+      qc.invalidateQueries({ queryKey: ["accepted-types"] });
+      toast.success("Jenis sampah berhasil dihapus");
+    },
+    onError: () => toast.error("Gagal menghapus jenis sampah"),
   });
 }
 

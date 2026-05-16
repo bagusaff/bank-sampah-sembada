@@ -9,10 +9,11 @@ import {
   Loader2,
   Search,
   History,
+  Trash2,
 } from "lucide-react";
 import { usePageTitle } from "../../../hooks/usePageTitle";
 import ErrorState from "../../../components/common/ErrorState";
-import { useAllTrashTypes, useActivePrices, useUpdatePrice, useUpdateTrashType, useCreateTrashType } from "../../../hooks/usePrices";
+import { useAllTrashTypes, useActivePrices, useUpdatePrice, useUpdateTrashType, useCreateTrashType, useDeleteTrashType } from "../../../hooks/usePrices";
 import { useAuth } from "../../../hooks/useAuth";
 import { formatRupiah } from "../../../utils/formatters";
 import { format } from "date-fns";
@@ -280,6 +281,7 @@ export default function PriceList() {
 
   const { data: trashTypes, isLoading, error, refetch } = useAllTrashTypes();
   const updateTrashType = useUpdateTrashType();
+  const deleteTrashType = useDeleteTrashType();
   const [search, setSearch] = useState("");
   const [historyType, setHistoryType] = useState<TrashType | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -465,6 +467,19 @@ export default function PriceList() {
                               >
                                 <History size={12} />
                                 Riwayat
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm(`Hapus "${t.name}"? Tindakan ini tidak dapat dibatalkan.`)) {
+                                    deleteTrashType.mutate(t.id);
+                                  }
+                                }}
+                                disabled={deleteTrashType.isPending}
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-50 border border-red-100 text-red-600 font-bold rounded-lg text-xs hover:bg-red-100 disabled:opacity-50 transition-all"
+                                title="Hapus"
+                              >
+                                <Trash2 size={12} />
+                                Hapus
                               </button>
                             </div>
                           </td>

@@ -97,6 +97,7 @@ export interface News {
   title: string;
   content: string;
   type: "announcement" | "price_update" | "tips" | "general";
+  images: string[];
   created_by: string;
   published_at: string;
   created_at: string;

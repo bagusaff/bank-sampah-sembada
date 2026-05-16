@@ -122,6 +122,11 @@ export async function setNewPrice(
   return data as TrashPrice;
 }
 
+export async function deleteTrashType(id: string): Promise<void> {
+  const { error } = await supabase.from("trash_types").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function updatePrice(
   trashTypeId: string,
   pricePerKg: number,
