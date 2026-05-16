@@ -10,6 +10,38 @@ export async function getAllNews(): Promise<News[]> {
   return data as News[];
 }
 
+/**
+ * Fetch published news ordered by published_at desc.
+ * Optionally limit the number of results.
+ */
+export async function getNews(limit?: number): Promise<News[]> {
+  let query = supabase
+    .from("news")
+    .select("*")
+    .order("published_at", { ascending: false });
+
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data as News[];
+}
+
+/**
+ * Fetch a single news item by ID.
+ */
+export async function getNewsById(id: string): Promise<News> {
+  const { data, error } = await supabase
+    .from("news")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data as News;
+}
+
 export async function createNews(
   payload: Omit<News, "id" | "created_at">,
   createdBy: string

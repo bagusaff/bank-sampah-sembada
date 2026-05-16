@@ -3,16 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { Phone, KeyRound, ArrowLeft, Loader2, Leaf } from "lucide-react";
-import { supabase } from "../lib/supabase";
-import { sendOtp, verifyOtp } from "../services/auth.service";
+import { sendOtp, verifyOtp, devLogin } from "../services/auth.service";
 import { formatPhoneStorage } from "../utils/formatters";
-
-// ─── Dev-only test credentials (set up in Supabase manually) ─────────────────
-const DEV_CREDENTIALS = {
-  member: { email: "member@banksampah.dev", password: "Test1234!" },
-  admin:  { email: "admin@banksampah.dev",  password: "Test1234!" },
-} as const;
 
 // ─── Validation schemas ───────────────────────────────────────────────────────
 const phoneSchema = z.object({
@@ -142,17 +136,30 @@ export default function LoginPage() {
     }
   }
 
+  const navigate = useNavigate();
+
   // ── Dev bypass ──
   async function handleDevLogin(role: "member" | "admin") {
     setDevLoading(role);
     try {
-      const { error } = await supabase.auth.signInWithPassword(
-        DEV_CREDENTIALS[role]
+      const profile = await devLogin(
+        role === "admin"
+          ? "admin@banksampah.dev"
+          : "member@banksampah.dev",
+        role === "admin"
+          ? "admin123456"
+          : "member123456"
       );
-      if (error) throw error;
-      // AuthContext picks up session → redirect handled by App.tsx
-    } catch {
-      toast.error(`Gagal masuk sebagai ${role}. Cek kredensial di Supabase.`);
+      toast.success(`Berhasil masuk sebagai ${profile.role}`);
+      navigate(profile.role === "admin" ? "/admin" : "/member", {
+        replace: true,
+      });
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : `Gagal masuk sebagai ${role}. Cek kredensial di Supabase.`
+      );
     } finally {
       setDevLoading(null);
     }

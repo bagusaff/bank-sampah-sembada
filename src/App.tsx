@@ -20,6 +20,10 @@ import MemberLayout from "./pages/MemberLayout";
 import PublicLayout from "./pages/PublicLayout";
 import NotFoundPage from "./pages/NotFoundPage";
 
+import HomePage from "./components/public/HomePage";
+import NewsListPage from "./components/public/NewsListPage";
+import NewsDetailPage from "./components/public/NewsDetailPage";
+
 // ─── Query client ────────────────────────────────────────────────────────────
 
 const queryClient = new QueryClient({
@@ -81,7 +85,9 @@ export default function App() {
             <Routes>
               {/* ── Public (no auth) ── */}
               <Route path="/" element={<PublicLayout />}>
-                <Route index element={<Placeholder title="Beranda — Harga Sampah & Berita" />} />
+                <Route index element={<HomePage />} />
+                <Route path="news" element={<NewsListPage />} />
+                <Route path="news/:id" element={<NewsDetailPage />} />
               </Route>
 
               {/* ── Login ── */}
