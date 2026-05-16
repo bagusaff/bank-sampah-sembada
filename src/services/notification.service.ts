@@ -1,7 +1,9 @@
 import { supabase } from "../lib/supabase";
 import type { Notification } from "../types";
 
-export async function getNotifications(userId: string): Promise<Notification[]> {
+export async function getNotificationsByUser(
+  userId: string
+): Promise<Notification[]> {
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
@@ -11,11 +13,11 @@ export async function getNotifications(userId: string): Promise<Notification[]> 
   return data as Notification[];
 }
 
-export async function markAsRead(id: string): Promise<void> {
+export async function markAsRead(notificationId: string): Promise<void> {
   const { error } = await supabase
     .from("notifications")
     .update({ is_read: true })
-    .eq("id", id);
+    .eq("id", notificationId);
   if (error) throw error;
 }
 

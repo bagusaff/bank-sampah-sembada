@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getWithdrawalsByMember,
   getAllWithdrawals,
+  getLastWithdrawalDate,
   createWithdrawalRequest,
   completeWithdrawal,
   cancelWithdrawal,
@@ -24,17 +25,36 @@ export function useAllWithdrawals() {
   });
 }
 
+export function useLastWithdrawalDate(memberId: string) {
+  return useQuery({
+    queryKey: ["withdrawals", "last", memberId],
+    queryFn: () => getLastWithdrawalDate(memberId),
+    enabled: !!memberId,
+  });
+}
+
 export function useCreateWithdrawal() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (
-      payload: Pick<WithdrawalRequest, "member_id" | "withdrawal_type" | "total_amount" | "selected_deposits" | "bank_account_id" | "notes">
+      payload: Pick<
+        WithdrawalRequest,
+        | "member_id"
+        | "withdrawal_type"
+        | "total_amount"
+        | "selected_deposits"
+        | "bank_account_id"
+        | "notes"
+      >
     ) => createWithdrawalRequest(payload),
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["withdrawals", "member", vars.member_id] });
-      toast.success("Permintaan penarikan dikirim");
+      qc.invalidateQueries({ queryKey: ["withdrawals", "last", vars.member_id] });
+      qc.invalidateQueries({ queryKey: ["deposits", vars.member_id] });
+      qc.invalidateQueries({ queryKey: ["balance", vars.member_id] });
+      toast.success("Permintaan penarikan berhasil dikirim");
     },
-    onError: () => toast.error("Gagal mengirim permintaan"),
+    onError: () => toast.error("Gagal mengirim permintaan penarikan"),
   });
 }
 

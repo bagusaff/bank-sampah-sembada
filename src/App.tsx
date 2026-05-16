@@ -24,6 +24,12 @@ import HomePage from "./components/public/HomePage";
 import NewsListPage from "./components/public/NewsListPage";
 import NewsDetailPage from "./components/public/NewsDetailPage";
 
+import MemberDashboard from "./components/member/MemberDashboard";
+import DepositList from "./components/member/DepositHistory/DepositList";
+import NotificationCenter from "./components/member/NotificationCenter";
+import WithdrawalStepper from "./components/member/WithdrawalFlow/WithdrawalStepper";
+import WithdrawalList from "./components/member/WithdrawalHistory/WithdrawalList";
+
 // ─── Query client ────────────────────────────────────────────────────────────
 
 const queryClient = new QueryClient({
@@ -118,10 +124,11 @@ export default function App() {
               <Route path="/member" element={<ProtectedRoute role="member" />}>
                 <Route element={<MemberLayout />}>
                   <Route index element={<Navigate to="dashboard" replace />} />
-                  <Route path="dashboard"     element={<Placeholder title="Dashboard" />} />
-                  <Route path="deposits"      element={<Placeholder title="Riwayat Deposit" />} />
-                  <Route path="withdrawal"    element={<Placeholder title="Penarikan Saldo" />} />
-                  <Route path="notifications" element={<Placeholder title="Notifikasi" />} />
+                  <Route path="dashboard"     element={<MemberDashboard />} />
+                  <Route path="deposits"      element={<DepositList />} />
+                  <Route path="withdrawal"    element={<WithdrawalStepper />} />
+                  <Route path="withdrawals"   element={<WithdrawalList />} />
+                  <Route path="notifications" element={<NotificationCenter />} />
                   <Route path="settings"      element={<Placeholder title="Pengaturan" />} />
                 </Route>
               </Route>
