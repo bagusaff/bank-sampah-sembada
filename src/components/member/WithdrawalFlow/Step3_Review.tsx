@@ -3,7 +3,6 @@ import { useFormContext } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
-  ChevronRight,
   Send,
   Loader2,
   Info,

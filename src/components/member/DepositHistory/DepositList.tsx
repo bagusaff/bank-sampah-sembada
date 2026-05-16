@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import {
   History,
-  Loader2,
   ChevronLeft,
   ChevronRight,
   Filter,
@@ -15,7 +14,6 @@ import { useAuth } from "../../../hooks/useAuth";
 import { formatRupiah } from "../../../utils/formatters";
 import { format, isWithinInterval, parseISO, startOfDay, endOfDay } from "date-fns";
 import { id } from "date-fns/locale";
-import type { DepositWithRelations } from "../../../types";
 
 const ITEMS_PER_PAGE = 10;
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
@@ -63,7 +63,7 @@ function PasswordInput({
   error,
   placeholder = "Password",
 }: {
-  register: ReturnType<typeof useForm>["register"];
+  register: UseFormRegisterReturn;
   error?: string;
   placeholder?: string;
 }) {

@@ -6,9 +6,6 @@ import type { DepositWithRelations, WithdrawalWithRelations, MemberWithBalance }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function formatRupiahNum(n: number): number {
-  return Math.round(n);
-}
 
 function getMonthName(month: number): string {
   const names = [

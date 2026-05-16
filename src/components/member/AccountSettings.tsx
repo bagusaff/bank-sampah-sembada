@@ -14,7 +14,6 @@ import {
   Star,
   Trash2,
   Plus,
-  CheckCircle2,
   Shield,
   Clock,
 } from "lucide-react";

@@ -82,11 +82,9 @@ function TableSkeleton() {
 function DeleteModal({
   news,
   onClose,
-  onConfirm,
 }: {
   news: News;
   onClose: () => void;
-  onConfirm: () => void;
 }) {
   const deleteMutation = useDeleteNews();
 
@@ -336,7 +334,6 @@ export default function NewsList() {
         <DeleteModal
           news={deleteTarget}
           onClose={() => setDeleteTarget(null)}
-          onConfirm={() => setDeleteTarget(null)}
         />
       )}
     </div>

@@ -32,9 +32,6 @@ function formatShortDate(dateStr: string): string {
   return format(new Date(dateStr), "d MMM yyyy HH:mm", { locale: id });
 }
 
-function formatLongDate(dateStr: string): string {
-  return format(new Date(dateStr), "d MMMM yyyy", { locale: id });
-}
 
 // ─── Status section ──────────────────────────────────────────────────────────
 

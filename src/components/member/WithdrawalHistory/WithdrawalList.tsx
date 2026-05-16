@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   History,
-  Loader2,
   ChevronLeft,
   ChevronRight,
   Filter,

@@ -4,7 +4,6 @@ import {
   Recycle,
   Newspaper,
   ArrowRight,
-  Loader2,
   Package,
   FileText,
   Lightbulb,

@@ -4,7 +4,6 @@ import {
   ArrowDownLeft,
   ArrowRight,
   History,
-  Loader2,
   AlertCircle,
   Bell,
   Leaf,
@@ -219,11 +218,9 @@ function RecentDeposits({
 function NotificationPreview({
   notifications,
   isLoading,
-  userId,
 }: {
   notifications: import("../../types").Notification[] | undefined;
   isLoading: boolean;
-  userId: string;
 }) {
   if (isLoading) return <NotificationsSkeleton />;
 
@@ -377,7 +374,6 @@ export default function MemberDashboard() {
           <NotificationPreview
             notifications={notifications}
             isLoading={notificationsLoading}
-            userId={memberId}
           />
         </div>
       </div>

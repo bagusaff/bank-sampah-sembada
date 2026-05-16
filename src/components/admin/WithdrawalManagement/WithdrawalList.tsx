@@ -80,7 +80,7 @@ const TABS: { key: Tab; label: string }[] = [
 export default function WithdrawalList() {
 	usePageTitle("Kelola Penarikan");
 
-	const { data: withdrawals, isLoading, error, refetch, dataUpdatedAt } = useAllWithdrawalRequests();
+	const { data: withdrawals, isLoading, error, refetch } = useAllWithdrawalRequests();
 	const [search, setSearch] = useState("");
 	const [activeTab, setActiveTab] = useState<Tab>("all");
 	const [selectedId, setSelectedId] = useState<string | null>(null);

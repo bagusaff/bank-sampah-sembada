@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Newspaper,
   ArrowRight,
-  Loader2,
   ChevronLeft,
   ChevronRight,
   Info,
